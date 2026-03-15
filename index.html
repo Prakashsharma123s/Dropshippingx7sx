@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Store | VIP Drop Shipping</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        .glass-nav { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
+        .product-card:hover { transform: translateY(-10px); transition: all 0.3s ease; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+    <nav class="fixed w-full z-50 glass-nav border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="text-2xl font-bold tracking-tighter text-indigo-600">PREMIUM<span class="text-black">SHOP</span></div>
+                <div class="hidden md:flex space-x-8 font-medium">
+                    <a href="#" class="hover:text-indigo-600">Home</a>
+                    <a href="#products" class="hover:text-indigo-600">Products</a>
+                    <a href="#about" class="hover:text-indigo-600">About</a>
+                </div>
+                <div class="flex items-center space-x-5">
+                    <i class="fa-solid fa-magnifying-glass cursor-pointer"></i>
+                    <div class="relative">
+                        <i class="fa-solid fa-cart-shopping cursor-pointer"></i>
+                        <span class="absolute -top-2 -right-2 bg-indigo-600 text-white text-xs rounded-full px-1.5">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="pt-32 pb-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
+                Exclusive Collection <br><span class="text-indigo-600">For Your Lifestyle.</span>
+            </h1>
+            <p class="text-gray-500 text-lg mb-10 max-w-2xl mx-auto">
+                Discover our handpicked premium products delivered straight to your doorstep with worldwide shipping.
+            </p>
+            <a href="#products" class="bg-black text-white px-10 py-4 rounded-full font-bold hover:bg-gray-800 transition shadow-xl">
+                Shop Now <i class="fa-solid fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+    </section>
+
+    <section id="products" class="py-20">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-12">Trending Now</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                
+                <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+                    <div class="h-80 bg-gray-200 flex items-center justify-center">
+                        <i class="fa-solid fa-image text-gray-400 text-5xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-xs text-indigo-600 font-bold uppercase mb-2">Electronics</p>
+                        <h3 class="text-xl font-bold mb-2">Premium Wireless Pods</h3>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold">$129.00</span>
+                            <button class="bg-black text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-600 transition">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+                    <div class="h-80 bg-gray-200 flex items-center justify-center">
+                        <i class="fa-solid fa-image text-gray-400 text-5xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-xs text-indigo-600 font-bold uppercase mb-2">Lifestyle</p>
+                        <h3 class="text-xl font-bold mb-2">Minimalist Smart Watch</h3>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold">$199.00</span>
+                            <button class="bg-black text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-600 transition">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+                    <div class="h-80 bg-gray-200 flex items-center justify-center">
+                        <i class="fa-solid fa-image text-gray-400 text-5xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-xs text-indigo-600 font-bold uppercase mb-2">Accessories</p>
+                        <h3 class="text-xl font-bold mb-2">Leather Tech Pouch</h3>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold">$45.00</span>
+                            <button class="bg-black text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-600 transition">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-black text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
+            <div class="text-2xl font-bold mb-4 md:mb-0">PREMIUM STORE</div>
+            <div class="flex space-x-6 text-gray-400">
+                <a href="#" class="hover:text-white"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#" class="hover:text-white"><i class="fa-brands fa-twitter"></i></a>
+                <a href="#" class="hover:text-white"><i class="fa-brands fa-facebook"></i></a>
+            </div>
+            <p class="text-gray-500 mt-4 md:mt-0 text-sm">© 2026 Premium Store. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
