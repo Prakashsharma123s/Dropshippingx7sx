@@ -3,114 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Store | VIP Drop Shipping</title>
+    <title>Premium Store | Elevate Your Style</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
-        .glass-nav { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
-        .product-card:hover { transform: translateY(-10px); transition: all 0.3s ease; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; overflow-x: hidden; background-color: #ffffff; }
+        
+        /* Sidebar Styling */
+        #cart-sidebar { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); transform: translateX(100%); }
+        #cart-sidebar.open { transform: translateX(0); }
+        .overlay { display: none; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); }
+        .overlay.active { display: block; }
+
+        /* Toast Notification (Pop-up) */
+        #toast {
+            visibility: hidden;
+            min-width: 200px;
+            background-color: #111827;
+            color: #fff;
+            text-align: center;
+            border-radius: 50px;
+            padding: 12px 24px;
+            position: fixed;
+            z-index: 100;
+            left: 50%;
+            bottom: 40px;
+            transform: translateX(-50%);
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 40px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 40px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+
+        /* Screenshot Theme specific spacing */
+        .hero-badge { background-color: #f0f3ff; color: #5c67ff; font-weight: 700; padding: 6px 16px; border-radius: 20px; font-size: 13px; text-transform: uppercase; }
+        .trending-line { width: 50px; height: 3px; background-color: #5c67ff; display: inline-block; margin-right: 15px; vertical-align: middle; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-900">
+<body class="text-slate-900">
 
-    <nav class="fixed w-full z-50 glass-nav border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <div class="text-2xl font-bold tracking-tighter text-indigo-600">PREMIUM<span class="text-black">SHOP</span></div>
-                <div class="hidden md:flex space-x-8 font-medium">
-                    <a href="#" class="hover:text-indigo-600">Home</a>
-                    <a href="#products" class="hover:text-indigo-600">Products</a>
-                    <a href="#about" class="hover:text-indigo-600">About</a>
-                </div>
-                <div class="flex items-center space-x-5">
-                    <i class="fa-solid fa-magnifying-glass cursor-pointer"></i>
-                    <div class="relative">
-                        <i class="fa-solid fa-cart-shopping cursor-pointer"></i>
-                        <span class="absolute -top-2 -right-2 bg-indigo-600 text-white text-xs rounded-full px-1.5">0</span>
-                    </div>
-                </div>
+    <div id="toast">Added to Cart</div>
+
+    <div id="overlay" class="overlay fixed inset-0 z-[60]" onclick="toggleCart()"></div>
+
+    <div id="cart-sidebar" class="fixed right-0 top-0 h-full w-full max-w-sm bg-white z-[70] shadow-2xl flex flex-col">
+        <div class="p-6 border-b flex justify-between items-center">
+            <h2 class="text-xl font-extrabold tracking-tight">Shopping Bag</h2>
+            <button onclick="toggleCart()" class="text-gray-400 hover:text-black transition">
+                <i class="fa-solid fa-xmark text-2xl"></i>
+            </button>
+        </div>
+        <div id="cart-content" class="flex-grow overflow-y-auto p-6 space-y-4">
+            <div class="text-center py-20 text-gray-400">
+                <p>Your bag is empty.</p>
+            </div>
+        </div>
+        <div class="p-6 border-t">
+            <div class="flex justify-between items-center mb-6">
+                <span class="text-gray-500 font-medium">Total Price</span>
+                <span id="cart-total" class="text-2xl font-black text-slate-900">$0.00</span>
+            </div>
+            <button class="w-full bg-[#5c67ff] text-white py-4 rounded-xl font-bold hover:bg-indigo-700 transition active:scale-95 shadow-lg shadow-indigo-100">
+                Check Out
+            </button>
+        </div>
+    </div>
+
+    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            <div class="text-xl font-black tracking-tighter uppercase">Premium<span class="text-[#5c67ff]">Shop</span></div>
+            <div class="relative cursor-pointer" onclick="toggleCart()">
+                <i class="fa-solid fa-cart-shopping text-xl"></i>
+                <span id="nav-cart-count" class="absolute -top-2 -right-3 bg-[#5c67ff] text-white text-[10px] font-bold rounded-full h-5 w-5 flex items-center justify-center border-2 border-white">0</span>
             </div>
         </div>
     </nav>
 
-    <section class="pt-32 pb-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
-                Exclusive Collection <br><span class="text-indigo-600">For Your Lifestyle.</span>
-            </h1>
-            <p class="text-gray-500 text-lg mb-10 max-w-2xl mx-auto">
-                Discover our handpicked premium products delivered straight to your doorstep with worldwide shipping.
-            </p>
-            <a href="#products" class="bg-black text-white px-10 py-4 rounded-full font-bold hover:bg-gray-800 transition shadow-xl">
-                Shop Now <i class="fa-solid fa-arrow-right ml-2"></i>
-            </a>
+    <section class="pt-40 pb-20 px-6 max-w-5xl mx-auto text-center">
+        <div class="mb-8">
+            <span class="hero-badge">New Arrival 2026</span>
+        </div>
+        <h1 class="text-6xl md:text-[85px] font-[900] text-[#1a1c2d] leading-[0.9] tracking-tighter mb-10">
+            Elevate Your <br> <span class="text-[#5c67ff]">Style.</span>
+        </h1>
+        <p class="text-gray-500 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-medium">
+            High-quality products curated for the modern lifestyle. Fast shipping, premium support.
+        </p>
+    </section>
+
+    <section class="max-w-7xl mx-auto px-6 pb-24">
+        <h2 class="text-3xl md:text-4xl font-black text-[#1a1c2d] mb-12 flex items-center">
+            <span class="trending-line"></span> Trending Now
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+            
+            <div class="group">
+                <div class="aspect-[4/5] rounded-3xl overflow-hidden bg-gray-100 mb-6 relative">
+                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                </div>
+                <h3 class="text-xl font-bold mb-1">Studio Wireless Pods</h3>
+                <p class="text-gray-400 font-medium mb-4">$129.00</p>
+                <div class="flex flex-col gap-3">
+                    <button onclick="addToCart(1, 'Studio Wireless Pods', 129, 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200')" 
+                            class="w-full bg-gray-100 text-gray-900 py-3.5 rounded-2xl hover:bg-gray-200 transition font-bold">
+                        Add to Cart
+                    </button>
+                    <button class="w-full bg-[#1a1c2d] text-white py-3.5 rounded-2xl hover:bg-[#5c67ff] transition font-bold shadow-md">
+                        Buy Now
+                    </button>
+                </div>
+            </div>
+
+            <div class="group">
+                <div class="aspect-[4/5] rounded-3xl overflow-hidden bg-gray-100 mb-6 relative">
+                    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                </div>
+                <h3 class="text-xl font-bold mb-1">Arctic Smart Watch</h3>
+                <p class="text-gray-400 font-medium mb-4">$199.00</p>
+                <div class="flex flex-col gap-3">
+                    <button onclick="addToCart(2, 'Arctic Smart Watch', 199, 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200')" 
+                            class="w-full bg-gray-100 text-gray-900 py-3.5 rounded-2xl hover:bg-gray-200 transition font-bold">
+                        Add to Cart
+                    </button>
+                    <button class="w-full bg-[#1a1c2d] text-white py-3.5 rounded-2xl hover:bg-[#5c67ff] transition font-bold shadow-md">
+                        Buy Now
+                    </button>
+                </div>
+            </div>
+
+            <div class="group">
+                <div class="aspect-[4/5] rounded-3xl overflow-hidden bg-gray-100 mb-6 relative">
+                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                </div>
+                <h3 class="text-xl font-bold mb-1">Neon Sport Sneakers</h3>
+                <p class="text-gray-400 font-medium mb-4">$85.00</p>
+                <div class="flex flex-col gap-3">
+                    <button onclick="addToCart(3, 'Neon Sport Sneakers', 85, 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200')" 
+                            class="w-full bg-gray-100 text-gray-900 py-3.5 rounded-2xl hover:bg-gray-200 transition font-bold">
+                        Add to Cart
+                    </button>
+                    <button class="w-full bg-[#1a1c2d] text-white py-3.5 rounded-2xl hover:bg-[#5c67ff] transition font-bold shadow-md">
+                        Buy Now
+                    </button>
+                </div>
+            </div>
+
         </div>
     </section>
 
-    <section id="products" class="py-20">
-        <div class="max-w-7xl mx-auto px-4">
-            <h2 class="text-3xl font-bold mb-12">Trending Now</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-                
-                <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
-                    <div class="h-80 bg-gray-200 flex items-center justify-center">
-                        <i class="fa-solid fa-image text-gray-400 text-5xl"></i>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-xs text-indigo-600 font-bold uppercase mb-2">Electronics</p>
-                        <h3 class="text-xl font-bold mb-2">Premium Wireless Pods</h3>
-                        <div class="flex justify-between items-center">
-                            <span class="text-2xl font-bold">$129.00</span>
-                            <button class="bg-black text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-600 transition">Add to Cart</button>
+    <script>
+        let cart = [];
+
+        function toggleCart() {
+            document.getElementById('cart-sidebar').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        function showToast() {
+            const toast = document.getElementById("toast");
+            toast.className = "show";
+            setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 2800);
+        }
+
+        function addToCart(id, name, price, img) {
+            const existingItem = cart.find(item => item.id === id);
+            if (existingItem) {
+                existingItem.qty += 1;
+            } else {
+                cart.push({ id, name, price, img, qty: 1 });
+            }
+            updateCartUI();
+            showToast(); // Shows the "Added to Cart" pop-up
+        }
+
+        function updateCartUI() {
+            const cartContent = document.getElementById('cart-content');
+            const navCount = document.getElementById('nav-cart-count');
+            const totalDisplay = document.getElementById('cart-total');
+            
+            const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+            navCount.innerText = totalQty;
+
+            if (cart.length === 0) {
+                cartContent.innerHTML = `<div class="text-center py-20 text-gray-400"><p>Your bag is empty.</p></div>`;
+                totalDisplay.innerText = "$0.00";
+                return;
+            }
+
+            let html = '';
+            let total = 0;
+
+            cart.forEach(item => {
+                total += (item.price * item.qty);
+                html += `
+                    <div class="flex items-center space-x-4 bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                        <img src="${item.img}" class="w-16 h-16 object-cover rounded-xl bg-white">
+                        <div class="flex-grow">
+                            <h5 class="font-bold text-sm tracking-tight">${item.name}</h5>
+                            <p class="text-[#5c67ff] font-bold text-sm">$${item.price}</p>
+                            <div class="flex items-center space-x-3 mt-2">
+                                <button onclick="changeQty(${item.id}, -1)" class="w-6 h-6 border border-gray-200 rounded-md text-xs font-bold hover:bg-white">-</button>
+                                <span class="text-xs font-bold">${item.qty}</span>
+                                <button onclick="changeQty(${item.id}, 1)" class="w-6 h-6 border border-gray-200 rounded-md text-xs font-bold hover:bg-white">+</button>
+                            </div>
                         </div>
+                        <button onclick="removeItem(${item.id})" class="text-gray-300 hover:text-red-500 transition px-2">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
                     </div>
-                </div>
+                `;
+            });
 
-                <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
-                    <div class="h-80 bg-gray-200 flex items-center justify-center">
-                        <i class="fa-solid fa-image text-gray-400 text-5xl"></i>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-xs text-indigo-600 font-bold uppercase mb-2">Lifestyle</p>
-                        <h3 class="text-xl font-bold mb-2">Minimalist Smart Watch</h3>
-                        <div class="flex justify-between items-center">
-                            <span class="text-2xl font-bold">$199.00</span>
-                            <button class="bg-black text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-600 transition">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
+            cartContent.innerHTML = html;
+            totalDisplay.innerText = `$${total.toFixed(2)}`;
+        }
 
-                <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
-                    <div class="h-80 bg-gray-200 flex items-center justify-center">
-                        <i class="fa-solid fa-image text-gray-400 text-5xl"></i>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-xs text-indigo-600 font-bold uppercase mb-2">Accessories</p>
-                        <h3 class="text-xl font-bold mb-2">Leather Tech Pouch</h3>
-                        <div class="flex justify-between items-center">
-                            <span class="text-2xl font-bold">$45.00</span>
-                            <button class="bg-black text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-600 transition">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
+        function changeQty(id, delta) {
+            const item = cart.find(i => i.id === id);
+            if (item) {
+                item.qty += delta;
+                if (item.qty <= 0) removeItem(id);
+                else updateCartUI();
+            }
+        }
 
-            </div>
-        </div>
-    </section>
-
-    <footer class="bg-black text-white py-12">
-        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
-            <div class="text-2xl font-bold mb-4 md:mb-0">PREMIUM STORE</div>
-            <div class="flex space-x-6 text-gray-400">
-                <a href="#" class="hover:text-white"><i class="fa-brands fa-instagram"></i></a>
-                <a href="#" class="hover:text-white"><i class="fa-brands fa-twitter"></i></a>
-                <a href="#" class="hover:text-white"><i class="fa-brands fa-facebook"></i></a>
-            </div>
-            <p class="text-gray-500 mt-4 md:mt-0 text-sm">© 2026 Premium Store. All rights reserved.</p>
-        </div>
-    </footer>
-
+        function removeItem(id) {
+            cart = cart.filter(item => item.id !== id);
+            updateCartUI();
+        }
+    </script>
 </body>
 </html>
