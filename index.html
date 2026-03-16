@@ -2,240 +2,249 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Store | Elevate Your Style</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Premium Shop v3.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
         
-        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; overflow-x: hidden; background-color: #ffffff; }
-        
-        /* Sidebar Styling */
-        #cart-sidebar { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); transform: translateX(100%); }
-        #cart-sidebar.open { transform: translateX(0); }
-        .overlay { display: none; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); }
-        .overlay.active { display: block; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; margin: 0; padding: 0; }
 
-        /* Toast Notification (Pop-up) */
-        #toast {
-            visibility: hidden;
-            min-width: 200px;
-            background-color: #111827;
-            color: #fff;
-            text-align: center;
-            border-radius: 50px;
-            padding: 12px 24px;
+        /* Sidebar Base Style */
+        .my-sidebar {
             position: fixed;
-            z-index: 100;
-            left: 50%;
-            bottom: 40px;
-            transform: translateX(-50%);
-            font-weight: 600;
-            font-size: 14px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+            top: 0;
+            height: 100%;
+            width: 85%;
+            max-width: 320px;
+            background-color: white;
+            z-index: 9999; /* Sabse upar */
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 50px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
         }
-        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
 
-        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 40px; opacity: 1;} }
-        @keyframes fadeout { from {bottom: 40px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+        /* Left Sidebar Position */
+        #left-menu { left: -350px; }
+        #left-menu.active { left: 0; }
 
-        /* Screenshot Theme specific spacing */
-        .hero-badge { background-color: #f0f3ff; color: #5c67ff; font-weight: 700; padding: 6px 16px; border-radius: 20px; font-size: 13px; text-transform: uppercase; }
-        .trending-line { width: 50px; height: 3px; background-color: #5c67ff; display: inline-block; margin-right: 15px; vertical-align: middle; }
+        /* Right Sidebar Position */
+        #right-cart { right: -350px; }
+        #right-cart.active { right: 0; }
+
+        /* Overlay Fix */
+        #overlay-screen {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            z-index: 9998; /* Sidebar se just niche */
+            display: none;
+        }
+        #overlay-screen.active { display: block; }
+
+        /* Toast Popup */
+        #toast-msg {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #111;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 10000;
+            opacity: 0;
+            transition: 0.3s;
+            pointer-events: none;
+        }
+        #toast-msg.show { opacity: 1; bottom: 60px; }
     </style>
 </head>
-<body class="text-slate-900">
+<body>
 
-    <div id="toast">Added to Cart</div>
+    <div id="toast-msg">Item Added to Cart</div>
 
-    <div id="overlay" class="overlay fixed inset-0 z-[60]" onclick="toggleCart()"></div>
+    <div id="overlay-screen" onclick="closeSidebars()"></div>
 
-    <div id="cart-sidebar" class="fixed right-0 top-0 h-full w-full max-w-sm bg-white z-[70] shadow-2xl flex flex-col">
+    <div id="left-menu" class="my-sidebar">
         <div class="p-6 border-b flex justify-between items-center">
-            <h2 class="text-xl font-extrabold tracking-tight">Shopping Bag</h2>
-            <button onclick="toggleCart()" class="text-gray-400 hover:text-black transition">
-                <i class="fa-solid fa-xmark text-2xl"></i>
-            </button>
+            <h2 class="text-xl font-black text-indigo-600 uppercase">Explore</h2>
+            <button onclick="closeSidebars()"><i class="fa-solid fa-xmark text-2xl"></i></button>
         </div>
-        <div id="cart-content" class="flex-grow overflow-y-auto p-6 space-y-4">
-            <div class="text-center py-20 text-gray-400">
-                <p>Your bag is empty.</p>
+        <div class="p-6 space-y-8 flex-grow">
+            <div class="space-y-5">
+                <a href="#" class="flex items-center space-x-4 text-gray-800 font-bold text-lg">
+                    <i class="fa-solid fa-map-location-dot"></i> <span>Track Order</span>
+                </a>
+            </div>
+            <div class="pt-6 border-t">
+                <p class="text-[11px] font-black text-gray-400 uppercase tracking-widest mb-4">Categories</p>
+                <ul class="space-y-6 font-semibold text-gray-700">
+                    <li class="flex justify-between items-center">Jeans <i class="fa-solid fa-chevron-right text-[10px]"></i></li>
+                    <li class="flex justify-between items-center">Premium T-Shirts <i class="fa-solid fa-chevron-right text-[10px]"></i></li>
+                    <li class="flex justify-between items-center">Jackets <i class="fa-solid fa-chevron-right text-[10px]"></i></li>
+                    <li class="flex justify-between items-center">Accessories <i class="fa-solid fa-chevron-right text-[10px]"></i></li>
+                </ul>
             </div>
         </div>
-        <div class="p-6 border-t">
-            <div class="flex justify-between items-center mb-6">
-                <span class="text-gray-500 font-medium">Total Price</span>
-                <span id="cart-total" class="text-2xl font-black text-slate-900">$0.00</span>
+        <div class="p-6 bg-gray-50 text-[10px] text-center font-bold text-gray-400 tracking-widest">
+            MADE FOR YOU © 2026
+        </div>
+    </div>
+
+    <div id="right-cart" class="my-sidebar">
+        <div class="p-6 border-b flex justify-between items-center">
+            <h2 class="text-xl font-black text-indigo-600 uppercase">My Bag</h2>
+            <button onclick="closeSidebars()"><i class="fa-solid fa-xmark text-2xl"></i></button>
+        </div>
+        <div id="cart-list" class="flex-grow overflow-y-auto p-4 space-y-4">
+            <div class="text-center py-20 text-gray-300 italic">Your bag is empty</div>
+        </div>
+        <div class="p-6 border-t bg-white">
+            <div class="flex justify-between items-center mb-4">
+                <span class="font-bold text-gray-500">Subtotal:</span>
+                <span id="cart-total" class="text-2xl font-black text-indigo-600">$0.00</span>
             </div>
-            <button class="w-full bg-[#5c67ff] text-white py-4 rounded-xl font-bold hover:bg-indigo-700 transition active:scale-95 shadow-lg shadow-indigo-100">
-                Check Out
+            <button class="w-full bg-black text-white py-4 rounded-2xl font-black uppercase tracking-widest shadow-xl active:scale-95 transition">
+                Checkout Now
             </button>
         </div>
     </div>
 
-    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-md">
-        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
-            <div class="text-xl font-black tracking-tighter uppercase">Premium<span class="text-[#5c67ff]">Shop</span></div>
-            <div class="relative cursor-pointer" onclick="toggleCart()">
-                <i class="fa-solid fa-cart-shopping text-xl"></i>
-                <span id="nav-cart-count" class="absolute -top-2 -right-3 bg-[#5c67ff] text-white text-[10px] font-bold rounded-full h-5 w-5 flex items-center justify-center border-2 border-white">0</span>
-            </div>
+    <nav class="fixed top-0 w-full bg-white h-16 flex items-center px-4 gap-3 z-[1000] border-b shadow-sm">
+        <button onclick="openLeftMenu()" class="p-2">
+            <i class="fa-solid fa-bars-staggered text-xl"></i>
+        </button>
+        
+        <div class="flex-grow flex items-center bg-gray-100 h-10 px-3 rounded-xl border border-gray-200">
+            <i class="fa-solid fa-magnifying-glass text-gray-400 text-sm mr-2"></i>
+            <input type="text" placeholder="Search Style..." class="bg-transparent outline-none text-xs w-full font-semibold">
         </div>
+
+        <button onclick="openRightCart()" class="relative p-2">
+            <i class="fa-solid fa-bag-shopping text-xl"></i>
+            <span id="badge-count" class="absolute top-0 right-0 bg-indigo-600 text-white text-[9px] font-black rounded-full h-4 w-4 flex items-center justify-center border border-white">0</span>
+        </button>
     </nav>
 
-    <section class="pt-40 pb-20 px-6 max-w-5xl mx-auto text-center">
-        <div class="mb-8">
-            <span class="hero-badge">New Arrival 2026</span>
+    <main class="pt-20 px-4 pb-20">
+        <div class="py-6">
+            <h1 class="text-4xl font-black tracking-tighter leading-none text-gray-900">
+                Elevate Your <br><span class="text-indigo-600">Style.</span>
+            </h1>
         </div>
-        <h1 class="text-6xl md:text-[85px] font-[900] text-[#1a1c2d] leading-[0.9] tracking-tighter mb-10">
-            Elevate Your <br> <span class="text-[#5c67ff]">Style.</span>
-        </h1>
-        <p class="text-gray-500 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-medium">
-            High-quality products curated for the modern lifestyle. Fast shipping, premium support.
-        </p>
-    </section>
 
-    <section class="max-w-7xl mx-auto px-6 pb-24">
-        <h2 class="text-3xl md:text-4xl font-black text-[#1a1c2d] mb-12 flex items-center">
-            <span class="trending-line"></span> Trending Now
-        </h2>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-            
-            <div class="group">
-                <div class="aspect-[4/5] rounded-3xl overflow-hidden bg-gray-100 mb-6 relative">
-                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                </div>
-                <h3 class="text-xl font-bold mb-1">Studio Wireless Pods</h3>
-                <p class="text-gray-400 font-medium mb-4">$149.00</p>
-                <div class="flex flex-col gap-3">
-                    <button onclick="addToCart(1, 'Studio Wireless Pods', 149, 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200')" 
-                            class="w-full bg-gray-100 text-gray-900 py-3.5 rounded-2xl hover:bg-gray-200 transition font-bold">
-                        Add to Cart
-                    </button>
-                    <button class="w-full bg-[#1a1c2d] text-white py-3.5 rounded-2xl hover:bg-[#5c67ff] transition font-bold shadow-md">
-                        Buy Now
-                    </button>
-                </div>
+        <div id="grid-container" class="grid grid-cols-2 gap-4">
             </div>
-
-            <div class="group">
-                <div class="aspect-[4/5] rounded-3xl overflow-hidden bg-gray-100 mb-6 relative">
-                    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                </div>
-                <h3 class="text-xl font-bold mb-1">Arctic Smart Watch</h3>
-                <p class="text-gray-400 font-medium mb-4">$199.00</p>
-                <div class="flex flex-col gap-3">
-                    <button onclick="addToCart(2, 'Arctic Smart Watch', 199, 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200')" 
-                            class="w-full bg-gray-100 text-gray-900 py-3.5 rounded-2xl hover:bg-gray-200 transition font-bold">
-                        Add to Cart
-                    </button>
-                    <button class="w-full bg-[#1a1c2d] text-white py-3.5 rounded-2xl hover:bg-[#5c67ff] transition font-bold shadow-md">
-                        Buy Now
-                    </button>
-                </div>
-            </div>
-
-            <div class="group">
-                <div class="aspect-[4/5] rounded-3xl overflow-hidden bg-gray-100 mb-6 relative">
-                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                </div>
-                <h3 class="text-xl font-bold mb-1">Neon Sport Sneakers</h3>
-                <p class="text-gray-400 font-medium mb-4">$85.00</p>
-                <div class="flex flex-col gap-3">
-                    <button onclick="addToCart(3, 'Neon Sport Sneakers', 85, 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200')" 
-                            class="w-full bg-gray-100 text-gray-900 py-3.5 rounded-2xl hover:bg-gray-200 transition font-bold">
-                        Add to Cart
-                    </button>
-                    <button class="w-full bg-[#1a1c2d] text-white py-3.5 rounded-2xl hover:bg-[#5c67ff] transition font-bold shadow-md">
-                        Buy Now
-                    </button>
-                </div>
-            </div>
-
-        </div>
-    </section>
+    </main>
 
     <script>
         let cart = [];
+        const catalog = [
+            { name: "Studio Pods", price: 129, img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400" },
+            { name: "Arctic Watch", price: 199, img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400" },
+            { name: "Neon Sneakers", price: 85, img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400" }
+        ];
 
-        function toggleCart() {
-            document.getElementById('cart-sidebar').classList.toggle('open');
-            document.getElementById('overlay').classList.toggle('active');
+        // Sidebar Control
+        function openLeftMenu() {
+            document.getElementById('left-menu').classList.add('active');
+            document.getElementById('overlay-screen').classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
 
-        function showToast() {
-            const toast = document.getElementById("toast");
-            toast.className = "show";
-            setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 2800);
+        function openRightCart() {
+            document.getElementById('right-cart').classList.add('active');
+            document.getElementById('overlay-screen').classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
 
+        function closeSidebars() {
+            document.getElementById('left-menu').classList.remove('active');
+            document.getElementById('right-cart').classList.remove('active');
+            document.getElementById('overlay-screen').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Build 25 Products Grid
+        const grid = document.getElementById('grid-container');
+        for (let i = 0; i < 25; i++) {
+            const p = catalog[i % catalog.length];
+            const id = i + 1;
+            grid.innerHTML += `
+                <div class="bg-white rounded-[28px] p-2 border border-gray-100 shadow-sm flex flex-col">
+                    <div class="aspect-square rounded-[22px] overflow-hidden bg-gray-50 mb-3">
+                        <img src="${p.img}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="px-1 flex-grow">
+                        <h3 class="font-bold text-[11px] text-gray-700 truncate tracking-tight uppercase">${p.name} #${id}</h3>
+                        <p class="text-indigo-600 font-black text-sm mb-3">$${p.price}</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-1">
+                        <button onclick="addToCart(${id}, '${p.name}', ${p.price}, '${p.img}')" class="bg-gray-100 text-[9px] font-black py-2.5 rounded-xl active:bg-gray-200">CART</button>
+                        <button class="bg-indigo-600 text-white text-[9px] font-black py-2.5 rounded-xl active:bg-indigo-700">BUY</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Cart Logic
         function addToCart(id, name, price, img) {
-            const existingItem = cart.find(item => item.id === id);
-            if (existingItem) {
-                existingItem.qty += 1;
+            const existing = cart.find(x => x.id === id);
+            if (existing) {
+                existing.qty++;
             } else {
                 cart.push({ id, name, price, img, qty: 1 });
             }
-            updateCartUI();
-            showToast(); // Shows the "Added to Cart" pop-up
+            renderCart();
+            
+            // Notification
+            const toast = document.getElementById('toast-msg');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
         }
 
-        function updateCartUI() {
-            const cartContent = document.getElementById('cart-content');
-            const navCount = document.getElementById('nav-cart-count');
+        function renderCart() {
+            const list = document.getElementById('cart-list');
             const totalDisplay = document.getElementById('cart-total');
+            const badge = document.getElementById('badge-count');
             
-            const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
-            navCount.innerText = totalQty;
+            let totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+            badge.innerText = totalQty;
 
             if (cart.length === 0) {
-                cartContent.innerHTML = `<div class="text-center py-20 text-gray-400"><p>Your bag is empty.</p></div>`;
+                list.innerHTML = '<div class="text-center py-20 text-gray-300 italic">Your bag is empty</div>';
                 totalDisplay.innerText = "$0.00";
                 return;
             }
 
-            let html = '';
-            let total = 0;
-
+            let html = '', subtotal = 0;
             cart.forEach(item => {
-                total += (item.price * item.qty);
+                subtotal += (item.price * item.qty);
                 html += `
-                    <div class="flex items-center space-x-4 bg-gray-50 p-4 rounded-2xl border border-gray-100">
-                        <img src="${item.img}" class="w-16 h-16 object-cover rounded-xl bg-white">
+                    <div class="flex items-center space-x-4 bg-gray-50 p-3 rounded-2xl border border-gray-100">
+                        <img src="${item.img}" class="w-14 h-14 object-cover rounded-xl">
                         <div class="flex-grow">
-                            <h5 class="font-bold text-sm tracking-tight">${item.name}</h5>
-                            <p class="text-[#5c67ff] font-bold text-sm">$${item.price}</p>
-                            <div class="flex items-center space-x-3 mt-2">
-                                <button onclick="changeQty(${item.id}, -1)" class="w-6 h-6 border border-gray-200 rounded-md text-xs font-bold hover:bg-white">-</button>
-                                <span class="text-xs font-bold">${item.qty}</span>
-                                <button onclick="changeQty(${item.id}, 1)" class="w-6 h-6 border border-gray-200 rounded-md text-xs font-bold hover:bg-white">+</button>
-                            </div>
+                            <h4 class="font-bold text-xs text-gray-800">${item.name}</h4>
+                            <p class="text-indigo-600 text-xs font-black">$${item.price} (x${item.qty})</p>
                         </div>
-                        <button onclick="removeItem(${item.id})" class="text-gray-300 hover:text-red-500 transition px-2">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
+                        <button onclick="remove(${item.id})" class="text-gray-300 p-2"><i class="fa-solid fa-trash-can"></i></button>
                     </div>
                 `;
             });
-
-            cartContent.innerHTML = html;
-            totalDisplay.innerText = `$${total.toFixed(2)}`;
+            list.innerHTML = html;
+            totalDisplay.innerText = `$${subtotal.toFixed(2)}`;
         }
 
-        function changeQty(id, delta) {
-            const item = cart.find(i => i.id === id);
-            if (item) {
-                item.qty += delta;
-                if (item.qty <= 0) removeItem(id);
-                else updateCartUI();
-            }
-        }
-
-        function removeItem(id) {
-            cart = cart.filter(item => item.id !== id);
-            updateCartUI();
+        function remove(id) {
+            cart = cart.filter(x => x.id !== id);
+            renderCart();
         }
     </script>
 </body>
